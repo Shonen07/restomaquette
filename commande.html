@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander - L'Attellu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #000000;
+            --accent-color: #dc143c;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --text-light: #ecf0f1;
+            --text-dark: #000000;
+            --bg-light: #f8f9fa;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "✦";
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .back-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        /* Order Section */
+        .order-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .delivery-info {
+            background: linear-gradient(135deg, var(--accent-color), #f39c12);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .category-tab.active {
+            background: var(--accent-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .category-tab:hover {
+            border-color: var(--accent-color);
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .menu-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .menu-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .menu-content {
+            padding: 1.5rem;
+        }
+
+        .menu-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .menu-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .add-to-cart {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-to-cart:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        .cart {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .clear-cart {
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .clear-cart:hover {
+            opacity: 0.7;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #95a5a6;
+        }
+
+        .cart-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-items {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .cart-item-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-color), #f39c12);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 25px;
+            height: 25px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .quantity {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .remove-item {
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .remove-item:hover {
+            transform: scale(1.2);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            border-top: 2px solid #e0e0e0;
+            padding-top: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border-top: 2px solid #e0e0e0;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkout-section {
+            margin-top: 2rem;
+        }
+
+        .delivery-time {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .delivery-time label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .delivery-time select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .delivery-time select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-color), #f39c12);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+        }
+
+        .checkout-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .modal-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #95a5a6;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-sidebar {
+                position: fixed;
+                right: -400px;
+                top: 0;
+                bottom: 0;
+                width: 400px;
+                max-width: 100%;
+                background: white;
+                transition: right 0.3s ease;
+                z-index: 999;
+                overflow-y: auto;
+            }
+
+            .cart-sidebar.show {
+                right: 0;
+                box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+            }
+
+            .mobile-cart-toggle {
+                display: block;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--accent-color);
+                color: white;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 998;
+            }
+        }
+
+        @media (min-width: 969px) {
+            .mobile-cart-toggle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">L'Attellu</a>
+            <div class="header-nav">
+                <a href="index.html" class="back-link">← Retour au site</a>
+                <div class="cart-icon" onclick="toggleMobileCart()">
+                    <svg viewBox="0 0 24 24" width="28" height="28">
+                        <path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span class="cart-count" id="headerCartCount">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Order Section -->
+        <section class="order-section">
+            <div class="section-header">
+                <h1 class="section-title">Commander à Emporter</h1>
+                <div class="delivery-info">
+                    <svg viewBox="0 0 24 24" width="20" height="20" style="fill: white;">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    <span>Prêt en 20-30 min</span>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="showMenuCategory('salades')">Salades</button>
+                <button class="category-tab" onclick="showMenuCategory('burgers')">Burgers</button>
+                <button class="category-tab" onclick="showMenuCategory('pates')">Pâtes</button>
+                <button class="category-tab" onclick="showMenuCategory('viandes')">Viandes</button>
+                <button class="category-tab" onclick="showMenuCategory('desserts')">Desserts</button>
+                <button class="category-tab" onclick="showMenuCategory('boissons')">Boissons</button>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="menu-grid" id="menuGrid">
+                <!-- Menu items will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Cart Sidebar -->
+        <aside class="cart-sidebar" id="cartSidebar">
+            <div class="cart">
+                <div class="cart-header">
+                    <h2 class="cart-title">Votre Panier</h2>
+                    <span class="clear-cart" onclick="clearCart()">Vider</span>
+                </div>
+
+                <div id="cartContent">
+                    <div class="cart-empty">
+                        <svg viewBox="0 0 24 24" width="64" height="64" style="fill: #95a5a6;">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <p style="margin-top: 1rem;">Votre panier est vide</p>
+                    </div>
+                </div>
+
+                <div class="checkout-section" id="checkoutSection" style="display: none;">
+                    <div class="delivery-time">
+                        <label for="deliveryTime">Heure de retrait</label>
+                        <select id="deliveryTime">
+                            <option value="asap">Dès que possible (20-30 min)</option>
+                            <option value="08:00">08h00</option>
+                            <option value="09:00">09h00</option>
+                            <option value="10:00">10h00</option>
+                            <option value="11:00">11h00</option>
+                            <option value="12:00">12h00</option>
+                            <option value="13:00">13h00</option>
+                            <option value="14:00">14h00</option>
+                            <option value="15:00">15h00</option>
+                            <option value="16:00">16h00</option>
+                            <option value="17:00">17h00</option>
+                            <option value="18:00">18h00</option>
+                            <option value="19:00">19h00</option>
+                            <option value="20:00">20h00</option>
+                            <option value="21:00">21h00</option>
+                            <option value="22:00">22h00</option>
+                        </select>
+                    </div>
+                    <button class="checkout-btn" onclick="checkout()">
+                        Valider la commande • <span id="totalPrice">0€</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Mobile Cart Toggle -->
+    <button class="mobile-cart-toggle" onclick="toggleMobileCart()">
+        <svg viewBox="0 0 24 24" width="32" height="32" style="fill: white;">
+            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
+        <span class="cart-count" id="mobileCartCount" style="position: absolute; top: 5px; right: 5px;">0</span>
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Commande Confirmée ! ✓</h2>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">Votre commande à emporter a été reçue avec succès.</p>
+            <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                <p style="margin-bottom: 0.8rem;"><strong>Numéro de commande :</strong> <span id="orderNumber" style="color: var(--accent-color); font-size: 1.1rem;"></span></p>
+                <p style="margin-bottom: 0.8rem;"><strong>Heure de retrait :</strong> <span id="deliveryEstimate"></span></p>
+                <p><strong>Adresse du restaurant :</strong><br>Rn 193, 20620 Biguglia</p>
+            </div>
+            <p style="color: #7f8c8d; font-size: 0.95rem;">Vous recevrez un SMS de confirmation. Présentez-vous à l'accueil avec votre numéro de commande.</p>
+        </div>
+    </div>
+
+    <script>
+        // Menu Data
+        const menuData = {
+            salades: [
+                { id: 1, name: "Salade César", description: "Poulet grillé, parmesan, croûtons, sauce césar", price: 12.5, image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&q=80", badge: "Populaire" },
+                { id: 2, name: "Salade Niçoise", description: "Thon, œufs, tomates, olives, anchois, haricots verts", price: 13, image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80" },
+                { id: 3, name: "Salade Chèvre Chaud", description: "Chèvre chaud, miel, noix, tomates confites", price: 11.5, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
+                { id: 4, name: "Salade Méditerranéenne", description: "Crevettes, avocat, tomates cerises, vinaigrette citron", price: 14, image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80" },
+                { id: 5, name: "Salade Composée", description: "Crudités du marché, vinaigrette maison", price: 9.5, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" }
+            ],
+            burgers: [
+                { id: 10, name: "Burger Classique", description: "Steak haché, cheddar, tomate, oignon, cornichons", price: 13.5, image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80", badge: "Signature" },
+                { id: 11, name: "Cheeseburger Bacon", description: "Double steak, bacon croustillant, cheddar, sauce BBQ", price: 15.5, image: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&q=80" },
+                { id: 12, name: "Burger Poulet", description: "Filet de poulet pané, salade, tomate, mayo", price: 12.5, image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&q=80" },
+                { id: 13, name: "Burger Végétarien", description: "Galette de légumes, avocat, crudités", price: 12, image: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=400&q=80" },
+                { id: 14, name: "Burger du Chef", description: "Steak angus, foie gras, confit d'oignons, roquette", price: 17.5, image: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80", badge: "Premium" }
+            ],
+            pates: [
+                { id: 15, name: "Spaghetti Carbonara", description: "Crème, lardons, parmesan, jaune d'œuf", price: 13.5, image: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&q=80", badge: "Fait maison" },
+                { id: 16, name: "Penne Arrabiata", description: "Sauce tomate épicée, ail, basilic", price: 12, image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80" },
+                { id: 17, name: "Tagliatelles au Saumon", description: "Saumon fumé, crème, aneth, citron", price: 15, image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&q=80" },
+                { id: 18, name: "Lasagnes Bolognaise", description: "Viande hachée, béchamel, parmesan", price: 14.5, image: "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=400&q=80", badge: "Signature" },
+                { id: 19, name: "Raviolis Ricotta-Épinards", description: "Sauce tomate maison, parmesan, basilic", price: 13, image: "https://images.unsplash.com/photo-1587740908075-9e245070dfaa?w=400&q=80" }
+            ],
+            viandes: [
+                { id: 20, name: "Entrecôte Grillée", description: "300g, sauce au poivre, frites maison", price: 22, image: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=400&q=80", badge: "Signature" },
+                { id: 21, name: "Magret de Canard", description: "Sauce miel et balsamique, légumes de saison", price: 19.5, image: "https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&q=80" },
+                { id: 22, name: "Côtelettes d'Agneau", description: "3 pièces, jus au romarin, gratin dauphinois", price: 21, image: "https://images.unsplash.com/photo-1624300629298-e9de39c13be5?w=400&q=80" },
+                { id: 23, name: "Bavette à l'Échalote", description: "250g, sauce échalote, frites maison", price: 18, image: "https://images.unsplash.com/photo-1558030006-450675393462?w=400&q=80" },
+                { id: 24, name: "Pavé de Saumon", description: "Sauce citron, riz basmati, légumes vapeur", price: 19, image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" }
+            ],
+            desserts: [
+                { id: 30, name: "Tiramisu Maison", description: "Recette traditionnelle italienne", price: 7.5, image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&q=80", badge: "Fait maison" },
+                { id: 31, name: "Fondant au Chocolat", description: "Cœur coulant, glace vanille", price: 8, image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&q=80" },
+                { id: 32, name: "Crème Brûlée", description: "Vanille de Madagascar", price: 7, image: "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=400&q=80" },
+                { id: 33, name: "Tarte Tatin", description: "Pommes caramélisées, crème fraîche", price: 7.5, image: "https://images.unsplash.com/photo-1587241321921-91a834d82ffc?w=400&q=80" },
+                { id: 34, name: "Café Gourmand", description: "Café + 3 mignardises", price: 9, image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80" }
+            ],
+            boissons: [
+                { id: 40, name: "Eau Minérale 50cl", description: "Plate ou gazeuse", price: 2.5, image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80" },
+                { id: 41, name: "Soda 33cl", description: "Coca, Fanta, Sprite, Ice Tea", price: 3, image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&q=80" },
+                { id: 42, name: "Jus de Fruits Frais", description: "Orange, pomme, ananas pressés", price: 4.5, image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80" },
+                { id: 43, name: "Café", description: "Expresso, allongé ou noisette", price: 2, image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&q=80" },
+                { id: 44, name: "Bière 33cl", description: "Pression ou bouteille au choix", price: 4.5, image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80" },
+                { id: 45, name: "Vin (Verre)", description: "Rouge, blanc ou rosé - Sélection du jour", price: 5, image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=80" }
+            ]
+        };
+
+        // Cart State
+        let cart = [];
+        let currentCategory = 'salades';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenu('salades');
+            loadCartFromStorage();
+        });
+
+        // Render Menu Items
+        function renderMenu(category) {
+            const menuGrid = document.getElementById('menuGrid');
+            const items = menuData[category] || [];
+
+            menuGrid.innerHTML = items.map(item => `
+                <div class="menu-card">
+                    <div class="menu-image" style="background-image: url('${item.image}'); background-size: cover; background-position: center;">
+                        ${item.badge ? `<span class="menu-badge">${item.badge}</span>` : ''}
+                    </div>
+                    <div class="menu-content">
+                        <h3 class="menu-name">${item.name}</h3>
+                        <p class="menu-description">${item.description}</p>
+                        <div class="menu-footer">
+                            <span class="menu-price">${item.price}€</span>
+                            <button class="add-to-cart" onclick="addToCart(${item.id})">
+                                <svg viewBox="0 0 24 24" width="16" height="16" style="fill: white;">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                <span>Ajouter</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show Menu Category
+        function showMenuCategory(category) {
+            currentCategory = category;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Render menu
+            renderMenu(category);
+        }
+
+        // Add to Cart
+        function addToCart(itemId) {
+            // Find item in menu data
+            let item = null;
+            for (let category in menuData) {
+                item = menuData[category].find(i => i.id === itemId);
+                if (item) break;
+            }
+            
+            if (!item) return;
+            
+            // Check if item already in cart
+            const existingItem = cart.find(i => i.id === itemId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    ...item,
+                    quantity: 1
+                });
+            }
+            
+            updateCart();
+            showToast(`${item.name} ajouté au panier`);
+        }
+
+        // Update Cart Display
+        function updateCart() {
+            const cartContent = document.getElementById('cartContent');
+            const checkoutSection = document.getElementById('checkoutSection');
+            const headerCartCount = document.getElementById('headerCartCount');
+            const mobileCartCount = document.getElementById('mobileCartCount');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Update cart counts
+            headerCartCount.textContent = totalItems;
+            if (mobileCartCount) mobileCartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="cart-empty">
+                        <svg viewBox="0 0 24 24" width="64" height="64" style="fill: #95a5a6;">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <p style="margin-top: 1rem;">Votre panier est vide</p>
+                    </div>
+                `;
+                checkoutSection.style.display = 'none';
+            } else {
+                cartContent.innerHTML = `
+                    <div class="cart-items">
+                        ${cart.map(item => `
+                            <div class="cart-item">
+                                <div class="cart-item-icon">${item.icon}</div>
+                                <div class="cart-item-details">
+                                    <div class="cart-item-name">${item.name}</div>
+                                    <div class="cart-item-controls">
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
+                                        <span class="quantity">${item.quantity}</span>
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                        <span class="cart-item-price">${item.price * item.quantity}€</span>
+                                    </div>
+                                </div>
+                                <span class="remove-item" onclick="removeFromCart(${item.id})">×</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Sous-total</span>
+                            <span>${totalPrice}€</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>${totalPrice}€</span>
+                        </div>
+                    </div>
+                `;
+                
+                checkoutSection.style.display = 'block';
+                document.getElementById('totalPrice').textContent = `${totalPrice}€`;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Update Item Quantity
+        function updateQuantity(itemId, change) {
+            const item = cart.find(i => i.id === itemId);
+            if (!item) return;
+            
+            item.quantity += change;
+            
+            if (item.quantity <= 0) {
+                removeFromCart(itemId);
+            } else {
+                updateCart();
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(itemId) {
+            cart = cart.filter(i => i.id !== itemId);
+            updateCart();
+            showToast('Article retiré du panier');
+        }
+
+        // Clear Cart
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Voulez-vous vraiment vider votre panier ?')) {
+                cart = [];
+                updateCart();
+                showToast('Panier vidé');
+            }
+        }
+
+        // Load Cart from Storage
+        function loadCartFromStorage() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCart();
+            }
+        }
+
+        // Checkout
+        function checkout() {
+            if (cart.length === 0) return;
+            
+            const orderNumber = 'CMD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const deliveryTime = document.getElementById('deliveryTime').value;
+            const deliveryEstimate = deliveryTime === 'asap' ? 'Dans 20-30 minutes' : deliveryTime;
+            
+            document.getElementById('orderNumber').textContent = orderNumber;
+            document.getElementById('deliveryEstimate').textContent = deliveryEstimate;
+            
+            // Show modal
+            document.getElementById('checkoutModal').classList.add('show');
+            
+            // Clear cart
+            cart = [];
+            updateCart();
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('checkoutModal').classList.remove('show');
+        }
+
+        // Toggle Mobile Cart
+        function toggleMobileCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.toggle('show');
+        }
+
+        // Show Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close mobile cart when clicking outside
+        document.addEventListener('click', (e) => {
+            const cartSidebar = document.getElementById('cartSidebar');
+            const mobileCartToggle = document.querySelector('.mobile-cart-toggle');
+            const cartIcon = document.querySelector('.cart-icon');
+            
+            if (window.innerWidth <= 968 && 
+                cartSidebar.classList.contains('show') &&
+                !cartSidebar.contains(e.target) &&
+                !mobileCartToggle.contains(e.target) &&
+                !cartIcon.contains(e.target)) {
+                cartSidebar.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
